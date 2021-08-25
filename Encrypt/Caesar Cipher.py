@@ -23,10 +23,10 @@ for character in plaintext:
         index = listchar.find(character)
         # The index will be modded by lengthchar, so the index won't be out of range
         index = (int(key) + index) % lengthchar
-        result = result + listchar[index]
+        result += listchar[index]
     else:
         # If the character is not in listchar variable, it won't be encrypted and put
         # in variable result immediately
-        result = result + character
+        result += character
 
 print("Caesar cypher result: {}".format(result))
