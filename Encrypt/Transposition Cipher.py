@@ -18,9 +18,9 @@ else:
 result = ""
 
 # This double loops used to get the character by the row. Variable "i" is used to represent the column
-# and variable j is used to represent the row.
+# and variable "j" is used to represent the row.
 for i in range (int(key)):
-    # To get every index in the row, we need to increment the index of j by the key
+    # To get every index in the column in the same row, we need to increment the index of "j" by the key
     for j in range (0, len(plaintext), int(key)):
         if (i+j > len(plaintext)-1):
             break
