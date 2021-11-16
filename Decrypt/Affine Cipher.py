@@ -1,16 +1,4 @@
-import enchant
-from threading import Thread
-
-def checkEnglish(plaintext, plaintextWord):
-    englishWords = enchant.Dict("en_US")
-
-    englishCheck = True
-
-    if not englishWords.check(plaintextWord):
-        englishCheck = False
-    
-    if (englishCheck):
-        print (plaintext)
+import detectEnglish
 
 def gcd(a, b):
     # Return the Greatest Common Divisor of a and b using Euclid's Algorithm
@@ -19,7 +7,7 @@ def gcd(a, b):
     return b
 
 def affineCipher(symbol, ciphertext):
-    for key in range (len(symbol) ** 3):
+    for key in range (len(symbol) ** 2):
         keyA = key // len(symbol)
         keyB = key % len(symbol)
 
@@ -37,19 +25,27 @@ def affineCipher(symbol, ciphertext):
 
         plaintext = ""
 
-        for i in ciphertext:
-            if i in symbol:
-                # Decrypt Affine Cipher has the formula (index_dari_character - keyB) * mod_invers_keyA % total_character_symbol
-                # The result will be stored in the plaintext variable. Where the stored character comes from the symbol variable,
-                # in the formula index above
-                plaintext += symbol[(symbol.find(i) - keyB) * modInverse % len(symbol)]
+        for character in ciphertext:
+            if character in symbol:
+                # Decrypt the symbol.
+                symbolIndex = symbol.find(character)
+                plaintext += symbol[(symbolIndex - keyB) * modInverse % len(symbol)]
             else:
-                plaintext += i
+                # Append the symbol without decrypting.
+                plaintext += character
 
-        for plaintextWord in plaintext:
-            thread = Thread(target=checkEnglish, args=(plaintext, plaintextWord,))
-            thread.start()
-            thread.join()
+        if detectEnglish.isEnglish(plaintext):
+                # waiting for input from the user, is the result of the plaintext correct or not?
+                # if it is correct, the user can input Y or y which will stop the bruteforce loop
+                print("Is this right?\n", plaintext)
+                print("Press Y or y to end the brute-force")
+                response = input("> ")
+                if response.lower() == "y":
+                    # return the correct result
+                    return (plaintext)
+                else:
+                    # continue brute-force
+                    continue
 
 def main():
     affineCiphertext = input("Affine ciphertext: ")
@@ -57,7 +53,10 @@ def main():
 
     affinePlaintext = affineCipher(affineSymbol, affineCiphertext)
 
-    # print("Plaintext: {}".format(affinePlaintext))
+    if affinePlaintext is None:
+        print("Failed to hack!")
+    else:
+        print("plaintext: {}".format(affinePlaintext))
 
 if __name__ == "__main__":
     main()
